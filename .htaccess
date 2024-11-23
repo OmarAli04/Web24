@@ -1,0 +1,5 @@
+ErrorDocument 404 /omar-mohamed/404.html
+ErrorDocument 403 /omar-mohamed/403.html
+php_flag allow_url_include Off
+# Disable directory indexing
+Options -Indexes
