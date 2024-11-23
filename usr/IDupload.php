@@ -177,7 +177,7 @@
                 echo "Random key:"; echo bin2hex($randomKey). "<br>";
                 echo "Encrypted AES key:"; echo bin2hex($finalenckey). "<br>";
 
-                //header("Location: bookingcomplete.php");
+                header("Location: bookingcomplete.php");
                 exit();
             } else {
                 // Handle error if either upload fails
