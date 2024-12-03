@@ -117,7 +117,7 @@ $files = $sftp->nlist($remoteDirectory);
 <body>
 
 <div class="container">
-    <h2>Employee IDs</h2>
+    <h2>Customer IDs</h2>
 
     <?php
     $config = include('sftpconfig.php');
@@ -168,9 +168,7 @@ $files = $sftp->nlist($remoteDirectory);
 
                 continue;
             }
-
-
-
+            
             // Check the length of the decrypted key
             if (strlen($decryptedAESKey) !== 32) {
                 echo "<p class='error-message'>Decrypted key for file $file must be exactly 32 bytes.</p>";

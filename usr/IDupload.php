@@ -121,9 +121,7 @@
             // Encrypt the file using phpseclib
             $encryptedFilePath = tempnam(sys_get_temp_dir(), 'enc_');
             $randomKey = random_bytes(32); // AES-256 requires a 32-byte key
-
-            //$password = 'bHPxTFkpRfJvnNYU6a4Emg8Q59Weuywz'; // Ensure to securely manage the password
-
+            
             // Set up AES encryption
             $aes = new AES('cbc');
             $aes->setKey($randomKey); // Set the encryption key
