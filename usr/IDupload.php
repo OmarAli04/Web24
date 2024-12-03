@@ -73,6 +73,7 @@
     </form>
 
     <?php
+
     session_start(); // Start a session to store error messages
     // Check if the user is logged in 
     if (!isset($_COOKIE['user_data'])) {
@@ -98,6 +99,7 @@
     // Load configuration securely
     $config = include('sftpconfig.php');
 
+    
     // Check if the form was submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES['id_file']) && $_FILES['id_file']['error'] === UPLOAD_ERR_OK) {
@@ -118,18 +120,38 @@
                 exit();
             }
 
+
+            function generateRandomBytes($numBytes) {
+                // Real-life sources of entropy
+                $currentTime = hrtime(true); // Current time in nanoseconds
+                $netConnections = count(explode("\n", shell_exec("netstat -an | grep ESTABLISHED"))); // Active connections
+                
+                // Combine real-life values into a seed
+                $entropySource = $currentTime . $netConnections;
+                
+                // Hash the entropy source using SHA-256
+                $hashedEntropy = hash('sha256', $entropySource, true);
+                
+                // Encode the hash to base64, which is alphanumeric (+ and / will be replaced)
+                $base64Encoded = base64_encode($hashedEntropy);
+                
+                // Remove non-alphanumeric characters (+, /)
+                $alphanumeric = preg_replace('/[^a-zA-Z0-9]/', '', $base64Encoded);
+                
+                // Return the desired number of alphanumeric characters
+                return substr($alphanumeric, 0, $numBytes);
+            }
+            
             // Encrypt the file using phpseclib
             $encryptedFilePath = tempnam(sys_get_temp_dir(), 'enc_');
-            $randomKey = random_bytes(32); // AES-256 requires a 32-byte key
-
-            //$password = 'bHPxTFkpRfJvnNYU6a4Emg8Q59Weuywz'; // Ensure to securely manage the password
-
+            $randomKey = generateRandomBytes(32); // AES-256 requires a 32-byte key
+            
             // Set up AES encryption
             $aes = new AES('cbc');
             $aes->setKey($randomKey); // Set the encryption key
 
             // Generate an initialization vector (IV)
-            $iv = random_bytes($aes->getBlockLength() / 8); // Get block length in bytes
+            $iv = generateRandomBytes(16); // Ensure the IV is 16 bytes
             $aes->setIV($iv); // Set the IV
 
             // Encrypt the file contents
@@ -177,7 +199,7 @@
                 echo "Random key:"; echo bin2hex($randomKey). "<br>";
                 echo "Encrypted AES key:"; echo bin2hex($finalenckey). "<br>";
 
-                //header("Location: bookingcomplete.php");
+                header("Location: bookingcomplete.php");
                 exit();
             } else {
                 // Handle error if either upload fails

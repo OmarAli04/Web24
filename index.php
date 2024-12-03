@@ -129,7 +129,7 @@ function generateUniquePIN($connect) {
 
         if (!$result) {
             die("Query failed: " . mysqli_error($connect));
-        }
+        }	
     } while (mysqli_num_rows($result) > 0);
 
     return $pin;
@@ -173,11 +173,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   mysqli_stmt_bind_param($stmt, "sssss", $username, $hashedpswd, $email, $salting, $role);
   mysqli_stmt_execute($stmt);
   mysqli_stmt_close($stmt);
-
-  echo "Signup Hash: " . $hashedpswd . "<br>";
-echo "Signup Salt: " . $salting . "<br>";
-	
+  header("Location: login.php");
   exit();
 }
-	
+
 ?> 

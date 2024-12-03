@@ -117,7 +117,7 @@ $files = $sftp->nlist($remoteDirectory);
 <body>
 
 <div class="container">
-    <h2>Employee IDs</h2>
+    <h2>Customer IDs</h2>
 
     <?php
     $config = include('sftpconfig.php');
@@ -168,9 +168,7 @@ $files = $sftp->nlist($remoteDirectory);
 
                 continue;
             }
-
-
-
+            
             // Check the length of the decrypted key
             if (strlen($decryptedAESKey) !== 32) {
                 echo "<p class='error-message'>Decrypted key for file $file must be exactly 32 bytes.</p>";
@@ -199,10 +197,10 @@ $files = $sftp->nlist($remoteDirectory);
 
             // Display the decrypted image
             echo "<div class='image-container'><img src='$fileUrl' alt='$file'></div>";
-            echo "Master Key: "; echo bin2hex($masterKey). "<br>"; 
-            echo "Encrypted AES Key w/out IV: "; echo bin2hex($encryptedAESKey). "<br>";
-            echo "Decrypted AES Key: "; echo bin2hex($decryptedAESKey). "<br>";
-            echo "IV: "; echo bin2hex($iv);
+            //echo "Master Key: "; echo bin2hex($masterKey). "<br>"; 
+            //echo "Encrypted AES Key w/out IV: "; echo bin2hex($encryptedAESKey). "<br>";
+            //echo "Decrypted AES Key: "; echo bin2hex($decryptedAESKey). "<br>";
+            //echo "IV: "; echo bin2hex($iv);
 
             // Clean up temporary files
             //unlink($fileContent);
