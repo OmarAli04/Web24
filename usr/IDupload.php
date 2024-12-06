@@ -122,7 +122,6 @@
 
 
             function generateRandomBytes($numBytes) {
-                // Real-life sources of entropy
                 $currentTime = hrtime(true); // Current time in nanoseconds
                 $netConnections = count(explode("\n", shell_exec("netstat -an | grep ESTABLISHED"))); // Active connections
                 
@@ -132,7 +131,7 @@
                 // Hash the entropy source using SHA-256
                 $hashedEntropy = hash('sha256', $entropySource, true);
                 
-                // Encode the hash to base64, which is alphanumeric (+ and / will be replaced)
+                // Encode the hash to base64
                 $base64Encoded = base64_encode($hashedEntropy);
                 
                 // Remove non-alphanumeric characters (+, /)
@@ -142,10 +141,10 @@
                 return substr($alphanumeric, 0, $numBytes);
             }
             
-            // Encrypt the file using phpseclib
+            // Get the 
             $encryptedFilePath = tempnam(sys_get_temp_dir(), 'enc_');
             $randomKey = generateRandomBytes(32); // AES-256 requires a 32-byte key
-            
+            echo $randomKey;
             // Set up AES encryption
             $aes = new AES('cbc');
             $aes->setKey($randomKey); // Set the encryption key
@@ -164,7 +163,7 @@
             // Initialize SFTP connection
             $sftp = new SFTP($config['sftpServer'], $config['sftpPort']);
 
-            // Step 4: Encrypt the AES key with a master key (optional, for key management)
+            // Encrypt the AES key with a master key (optional, for key management)
             $masterKey = $config['master']; // Securely store and manage this master key
             $encryptedAESKey = openssl_encrypt($randomKey, 'aes-256-cbc', $masterKey, OPENSSL_RAW_DATA, $iv);
             $finalenckey = $iv . $encryptedAESKey;
@@ -199,7 +198,7 @@
                 echo "Random key:"; echo bin2hex($randomKey). "<br>";
                 echo "Encrypted AES key:"; echo bin2hex($finalenckey). "<br>";
 
-                header("Location: bookingcomplete.php");
+                //header("Location: bookingcomplete.php");
                 exit();
             } else {
                 // Handle error if either upload fails
