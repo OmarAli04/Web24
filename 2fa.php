@@ -4,7 +4,7 @@ session_start();
 $connect = mysqli_connect("localhost", "root", "", "exotic-rentals", 3306);
 
 $code = $_SESSION['twoFACode'];
-echo $code; 
+//echo $code; 
 
 // Check if the user is logged in and the 2FA code is set
 if (!isset($_SESSION['username']) || !isset($_SESSION['twoFACode'])) {
