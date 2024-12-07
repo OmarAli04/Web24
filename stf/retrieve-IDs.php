@@ -197,10 +197,11 @@ $files = $sftp->nlist($remoteDirectory);
 
             // Display the decrypted image
             echo "<div class='image-container'><img src='$fileUrl' alt='$file'></div>";
-            echo "Master Key: "; echo bin2hex($masterKey). "<br>"; 
-            echo "Encrypted AES Key w/out IV: "; echo bin2hex($encryptedAESKey). "<br>";
-            echo "Decrypted AES Key: "; echo bin2hex($decryptedAESKey). "<br>";
-            echo "IV: "; echo bin2hex($iv);
+            
+            //echo "Master Key: "; echo bin2hex($masterKey). "<br>"; 
+            //echo "Encrypted AES Key w/out IV: "; echo bin2hex($encryptedAESKey). "<br>";
+            //echo "Decrypted AES Key: "; echo bin2hex($decryptedAESKey). "<br>";
+            //echo "IV: "; echo bin2hex($iv);
 
             // Clean up temporary files
             //unlink($fileContent);

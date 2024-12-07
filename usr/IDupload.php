@@ -144,7 +144,7 @@
             // Get the 
             $encryptedFilePath = tempnam(sys_get_temp_dir(), 'enc_');
             $randomKey = generateRandomBytes(32); // AES-256 requires a 32-byte key
-            echo $randomKey;
+            
             // Set up AES encryption
             $aes = new AES('cbc');
             $aes->setKey($randomKey); // Set the encryption key
@@ -195,10 +195,10 @@
                 echo "<br><br>";
                 echo "Master Key: "; echo bin2hex($masterKey). "<br>";
                 echo "IV: "; echo bin2hex($iv). "<br>";
-                echo "Random key:"; echo bin2hex($randomKey). "<br>";
+                echo "Random key:"; echo $randomKey. "<br>";
                 echo "Encrypted AES key:"; echo bin2hex($finalenckey). "<br>";
 
-                //header("Location: bookingcomplete.php");
+                header("Location: bookingcomplete.php");
                 exit();
             } else {
                 // Handle error if either upload fails
