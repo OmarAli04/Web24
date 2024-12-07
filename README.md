@@ -1,5 +1,5 @@
 
-# Exotic Rentals (Car Rental System)
+# Exotic Rentals (Car Rental System) (Secure)
 
 ## Pages
 - Home page: The page used to view FAQs, Browse rental information & view slideshow of cars.
