@@ -4,19 +4,25 @@ session_start();
 $connect = mysqli_connect("localhost", "root", "", "exotic-rentals", 3306);
 
 $code = $_SESSION['twoFACode'];
-//echo $code; 
-
+echo $code;
 // Check if the user is logged in and the 2FA code is set
 if (!isset($_SESSION['username']) || !isset($_SESSION['twoFACode'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
 
+// Initialize attempt counter in the session
+if (!isset($_SESSION['attempts'])) {
+    $_SESSION['attempts'] = 0; // Set to 0 initially
+}
+
+// Check if attempts exceed the limit
+if ($_SESSION['attempts'] >= 3) {
+    $error = "Too many failed attempts. Input is locked. Please wait.";
+    die($error); // Stop execution if the input is locked
+}
 
 // Connect to the database
-$connect = mysqli_connect("localhost", "root", "", "exotic-rentals", 3306);
-
-// Check connection
 if (!$connect) {
     die("Connection failed: " . mysqli_connect_error());
 }
@@ -27,7 +33,7 @@ $query = "SELECT rol FROM cred WHERE username=?";
 $stmt = mysqli_prepare($connect, $query);
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);    
+$result = mysqli_stmt_get_result($stmt);
 
 $row = mysqli_fetch_assoc($result);
 $role = $row['rol']; // Get the user's role
@@ -44,23 +50,25 @@ function sanitizeInput($input) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $enteredCode = sanitizeInput($_POST['2fa_code']);
 
-    $data = array(
-        'username' => $_SESSION['username'],
-      );
-      
-      $data_json = json_encode($data);
-    
-      setcookie('user_data', $data_json, [
-        'expires' => time() + 3600, // 1 hour
-        'path' => '/',
-        'samesite' => 'Strict', // Set SameSite attribute
-        'httponly' => true,
-      ]);
-  
-      
-    
     // Check if the entered code matches the one stored in the session
     if ($enteredCode == $_SESSION['twoFACode']) {
+        // Reset attempts on successful login
+        $_SESSION['attempts'] = 0;
+
+        // Generate the secure cookie on successful OTP validation
+        $data = array(
+            'username' => $_SESSION['username'],
+        );
+
+        $data_json = json_encode($data);
+
+        setcookie('user_data', $data_json, [
+            'expires' => time() + 3600, // 1 hour
+            'path' => '/',
+            'samesite' => 'Strict', // Set SameSite attribute
+            'httponly' => true,
+        ]);
+
         // Successful 2FA verification, redirect based on role
         if ($role == 'admin') {
             header("Location: /Web24/stf/adminhome.php"); // Admin home page
@@ -74,7 +82,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         exit();
     } else {
-        $error = "Invalid 2FA code. Please try again.";
+        // Increment attempts on failure
+        $_SESSION['attempts']++;
+        $remainingAttempts = 3 - $_SESSION['attempts'];
+
+        if ($_SESSION['attempts'] >= 3) {
+            $error = "Too many failed attempts. Input is locked. Please wait.";
+            die($error); // Stop execution after locking
+        } else {
+            $error = "Invalid 2FA code. You have $remainingAttempts attempts left.";
+        }
     }
 }
 
@@ -82,6 +99,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 mysqli_stmt_close($stmt);
 mysqli_close($connect);
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">

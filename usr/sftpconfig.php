@@ -1,6 +1,6 @@
 <?php
 return [
-    'sftpServer' => '172.22.233.221',
+    'sftpServer' => '172.23.2.179',
     'sftpPort' => 22,
     'sftpUsername' => 'sftpuser',
     'sftpPassword' => '123456', 
